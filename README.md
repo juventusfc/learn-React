@@ -857,3 +857,49 @@ Next.js 的显示过程：
 
 1. 使用通用技术和架构
 2. 构建工具的选择
+
+## 工具库
+
+- 初始化
+  - Yeoman
+  - 脚手架
+    - create-react-app: 前端渲染，前端路由
+    - Next.js: 后端渲染，后端路由
+    - Gatsby: 在 CI 中渲染
+    - Razzle: 类似于 Next.js
+- 开发
+  - 包管理
+    - npm
+  - 编译
+    - Babel
+  - 打包
+    - Webpack
+    - Neutrino
+    - Parcel
+- CI
+- 测试
+  - ava
+  - nyc
+- 发布
+  - aws-cli
+  - nwb
+
+## 选型
+
+- **Boilerplate**: create-react-app (with eject if required)
+- Utility: JavaScript ES6 + Lodash
+- **Styling**: CSS modules/ CSS in JS
+- Requests: axios + fetch
+- Higher Order Components: maybe + optional recompose
+- **Formatting**: Prettier
+- Type Checking: PropTypes
+- **State Management**: Redux + (Redux Thunk/Saga)
+- **Routing**: React Router
+- Authentication: Solution with an own Express/Hapi/Koa Node.js Server with Passport.js
+- Database: Solution with an own Express/Hapi/Koa Node.js Server with a SQL or NoSQL Database
+- **UI Components**: Semantic UI/ AntD
+- Time: moment or date-fns
+- **Testing**: Jest with Enzyme
+- **Bundle**: Babel + Webpack
+- **Deploy**
+- HMR

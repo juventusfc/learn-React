@@ -725,40 +725,69 @@ Reducer 在处理过程中，遵循 `state + action => new state` 规则，不�
 
 ## React Router 路由
 
-Redux 解决了应用的状态管理问题，React Router 解决了 URL 和组件的对应关系。
+Redux 解决了应用的状态管理问题，React Router **解决了 URL 和组件的对应关系**。
 
 在单页应用中，浏览器是不刷新的，通过 ajax 请求对页面元素进行更新，但是会存在一个问题：由于 URL 是不变的，当我们一步步获得某个应用状态时，如果要将这个状态发给别人看，别人通过你发的 URL 得到的是应用的初始状态。那么如何让别人也能看到这个状态呢？答案是通过路由。当应用的状态与 URL 一一对应，那么我们只要将 URL 发给别人，别人就能看到和我们一样的应用状态了。
 
-我们会在路由定义中定义路由和组件的对应关系。
-
-### React Router + React
+### 常用的 React Router component
 
 React Router 是**声明式**的**动态路由**。`react-router-dom` 是实际意义上的标准。主要有三种 component:
 
-1. Router Component
-   - `BrowserRouter`: URL 路由。更改 URL 但不会重新请求页面。刷新浏览器时，要求服务器能响应 URL，不然刷新会有问题。
-   - `HashRouter`: Hash 路由。更改 URL 的 hash 值，不会重新请求页面。适用于静态服务器。
-2. Route Matching Component: **Route 一定要放在 Router 里面**
+- **Router Component**, 会产生 history 对象给下级组件，浏览器在各个 URL 之间跳转不会重新请求服务器的关键。
 
-   - `Route`: 路径匹配时显示对应组件，如果浏览器当前路径有多个`Route`匹配，会显示多个匹配的路由
-   - `Switch`: 与 `Route` 类似，但是只显示第一个匹配的路由
+  - `BrowserRouter`: URL 路由。更改 URL 但不会重新请求页面。当用户刷新浏览器时，要求服务器能响应 URL，不然刷新会有问题。
+  - `HashRouter`: Hash 路由。更改 URL 的 hash 值，不会重新请求页面。适用于静态服务器。
 
-   ```javascript
-   <Switch>
-     <Route exact path="/" component={Home} />
-     <Route path="/about" component={About} />
-     <Route path="/contact" component={Contact} />
-     {/* when none of the above match, <NoMatch> will be rendered */}
-     <Route component={NoMatch} />
-   </Switch>
-   ```
+- **Route Matching Component**, **Route 一定要放在 Router 里面**。Route 匹配当前浏览器中的 `location.pathname` 和 定义的 `<Route path="/news" component={NewsFeed}/>` 属性中的 `path`属性，如果匹配成功，返回 `NewsFeed` 组件，如果匹配失败，返回 null。可以将 Route 应用于任何想通过 location 展示不同组件的场合。
 
-3. Navigation Component
-   - `Link`: 类似于 HTML 中的 `<a>`
-   - `NavLink`: 在 `Link` 的基础上增加了 active 时候的样式
-   - `Redirect`: 重定向
+  - `Route`: 路径匹配时显示对应组件，如果浏览器当前路径有多个 `Route` 匹配，会显示多个匹配的路由
 
-URL 传递参数给组件的步骤：
+    - Route render methods: 路由匹配成功时，有三种渲染组件的方式(`component`| `render` | `children`)
+
+      ```javascript
+      const Home = () => <div>Home</div>;
+
+      const App = () => {
+        const someVariable = true;
+
+        return (
+          <Switch>
+            // component 用于已经定义好了的组件的时候
+            <Route exact path="/" component={Home} />
+            // render 用于需要额外传递参数给组件的时候
+            <Route
+              path="/about"
+              render={props => <About {...props} extra={someVariable} />}
+            />
+          </Switch>
+        );
+      };
+      ```
+
+    - Route props: Route 默认传递了三个 props 给被渲染的组件
+      - match
+      - location
+      - history
+
+  - `Switch`: 与 `Route` 类似，但是只显示第一个匹配的路由
+
+    ```javascript
+    <Switch>
+      <Route exact path="/" component={Home} />
+      <Route path="/about" component={About} />
+      <Route path="/contact" component={Contact} />
+      {/* when none of the above match, <NoMatch> will be rendered */}
+      <Route component={NoMatch} />
+    </Switch>
+    ```
+
+- **Navigation Component**
+
+  - `Link`: 类似于 HTML 中的 `<a>`，用户点击后浏览器跳转到新路径，转到新路径后渲染先路径对应的组件
+  - `NavLink`: 在 `Link` 的基础上增加了 active 时候的样式
+  - `Redirect`: 浏览器重定向到新路径，转到新路径后渲染新路径对应的组件
+
+### URL 传递参数给组件的步骤
 
 1. 在 `Route` 中声明
    `<Route path="/topic/:topicId" component={Topic} />`
@@ -774,7 +803,8 @@ URL 传递参数给组件的步骤：
    }
    ```
 
-路由的嵌套：
+### 路由的嵌套：
+
 由于 React Router 将路由看作了一种 Component，所以 React 中 Component 那一套都可以用于路由上。路由的嵌套就是 Component 的嵌套。
 
 ### React Router + React + Redux

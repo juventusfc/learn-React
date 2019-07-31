@@ -14,15 +14,135 @@ Facebook 为了解决了两个问题，开发出了 React。React 其实就是�
 3. 单向数据流: 引入 Flux 设计方式，简化状态管理
 4. 完善的错误提示
 
+## JSX
+
+JSX 不是一种模板语言，是 JavaScript + XML。它允许在 JavaScript 中直接写 HTML 标记 ，可以把它看作是一种语法糖。React 应用通过 Babel 将 JSX 转化为 ES5 的 JavaScript 代码， 改变 DOM。
+
+JSX 语法使用标签元素，如果里面要使用 JavaScript，则在 `{}` 里写 JavaScript 代码。
+
+JSX 的写法主要包括:
+
+1. JSX 本身也是表达式  
+   `const element = <h1>Hello, wWrld!</h1>`
+2. 在属性中使用表达式  
+   `<MyComponent foo={1 + 2 + 3} />`
+3. 延展属性
+
+   ```javascript
+   const props = { firstName: "Frank", lastName: "Hu" }; // 普通的 JavaScript 代码
+   const greeting = <Greeting {...props} />; // JSX
+   ```
+
+4. 表达式作为子元素  
+   `const element = <li>{props.message}</li>`
+
+**在 JSX 中，小写的 tag 是原生节点，如：`<div>`;大写的 tag 是自定义的组件，如：`<Greeting />`。**
+
+### 在 HTML 中直接使用 JSX
+
+引入脚本：
+
+1. react
+2. react-dom
+3. babel-cli
+4. babel-preset-react-app
+
+### 在脚手架生成的 app 中使用 JSX
+
+用脚手架工具生成 app，然后使用 React 技术。
+
+一般在写 Component 的时候，会使用 JSX 和 ES6 语法，然后使用 Babel 将这些代码转化为浏览器可识别的代码，之后用 Webpack 打包。
+
+这也是 JSX 方式写 Component 一定要引用 react 模块的原因。因为 Babel 将 JSX 转化为 ES5 代码后，转化后代码中会包含 `React.createElement()` 等方法。
+
+```javascript
+// JSX 写法创建组件
+const element = <h1 className="greeting">Hello, world!</h1>;
+
+// Babel转化后，转化为 ES5
+var element = React.createElement(
+  "h1",
+  { className: "greeting" },
+  "Hello, world!"
+);
+
+// 运行后产生的 element 对象
+const element = {
+  type: "h1",
+  props: {
+    className: "greeting",
+    children: "Hello, world!"
+  }
+};
+```
+
+## 元素渲染
+
+JSX 只是生成了一个 React 元素，该元素描述了你在屏幕上想看到的内容。通过 ReactDOM 将 React 元素渲染到浏览器上。
+
+```html
+<!-- 真实 DOM 根节点 -->
+<div id="root"></div>
+```
+
+```javascript
+// React 元素
+const element = <h1>Hello, world</h1>;
+
+// ReactDOM 负责更新虚拟 DOM，并将虚拟 DOM 映射到真实 DOM 上
+ReactDOM.render(element, document.getElementById("root"));
+```
+
 ## 组件方式构建 UI
 
-组件主要由 `props` 和 `state` 组成 `view`，可以理解为一个纯函数。`props` 是由上层组件(使用者)传递给下层组件的，下层组件不能修改上层组件传给它的`props`，这叫做组件间的单向数据流(注意，Flux 单向数据流指的是整个 React 应用的数据流)。
+组件由元素组成，在代码中表现为由 `props` 和 `state` 组成 `view`，可以理解为一个纯函数。
 
-组件设计时，遵循的原则有：
+- `props` 是由上层组件(使用者)传递给下层组件的，下层组件不能修改上层组件传给它的`props`，这叫做组件间的单向数据流(注意，`Flux` 单向数据流指的是整个 React 应用的数据流)。
+- `state` 表示组件内的状态。
+
+组件设计时，推荐的原则有：
 
 1. 让组件无自身 `state`，所需数据从 `props` 获取
 2. DRY 原则
 3. 单一职责原则
+
+### `函数组件` VS `class 组件` VS `Hook 组件`
+
+1. 函数组件: 只有 props， 无 state
+
+   ```javascript
+   function Welcome(props) {
+     return <h1>Hello, {props.name}</h1>;
+   }
+   ```
+
+2. class 组件: 有 props 和 state
+
+   ```javascript
+   class Welcome extends React.Component {
+     render() {
+       return <h1>Hello, {this.props.name}</h1>;
+     }
+   }
+   ```
+
+3. Hook 组件: 有 props 和 state
+
+   ```javascript
+   import React, { useState } from "react";
+
+   function Example() {
+     // 声明一个叫 “count” 的 state 变量。
+     const [count, setCount] = useState(0);
+
+     return (
+       <div>
+         <p>You clicked {count} times</p>
+         <button onClick={() => setCount(count + 1)}>Click me</button>
+       </div>
+     );
+   }
+   ```
 
 ### 受控组件（推荐使用） VS 非受控组件
 
@@ -98,65 +218,6 @@ form 表单相关的元素比较特殊，在 React 中由两种设计思路：
      }
    }
    ```
-
-## JSX
-
-JSX 不是模板语言，是 JavaScript + XML，可以在 JavaScript 中直接写 HTML 标记 ，可以看作是一种语法糖，通过 Babel 将 JSX 转化为 ES5 的 javascript 代码， 改变 DOM。
-
-JSX 的语法主要是使用标签元素，如果里面要使用 JavaScript，则在 `{}` 里写 JavaScript 代码。
-
-1. JSX 本身也是表达式  
-   `const element = <h1>Hello, wWrld!</h1>`
-2. 在属性中使用表达式  
-   `<MyComponent foo={1 + 2 + 3} />`
-3. 延展属性
-
-   ```javascript
-   const props = { firstName: "frank", lastName: "hu" };
-   const greeting = <Greeting {...props} />;
-   ```
-
-4. 表达式作为子元素  
-   `const element = <li>{props.message}</li>`
-
-在 JSX 中，小写的 tag 是原生节点，如：`<div>`；大写的 tag 是自定义的组件，如：`<Greeting />`。
-
-### 在 HTML 中直接使用
-
-引入脚本：
-
-1. react
-2. react-dom
-3. babel
-
-### 在脚手架生成的 app 中使用
-
-用脚手架工具生成 app，然后使用 React 技术。
-
-一般在写 Component 的时候，会使用 JSX 和 ES6 语法，然后使用 Babel 将这些代码转化为浏览器可识别的代码，之后用 Webpack 打包。
-
-这也是 JSX 方式写 Component 一定要引用 react 模块的原因，因为 Babel 将 JSX 转化为 ES5 代码后，转化后代码中会有 React.createElement 等方法。
-
-```javascript
-// JSX 写法创建组件
-const element = <h1 className="greeting">Hello, world!</h1>;
-
-// Babel转化后，转化为 ES5
-var element = React.createElement(
-  "h1",
-  { className: "greeting" },
-  "Hello, world!"
-);
-
-// 运行后产生的 element 对象
-const element = {
-  type: "h1",
-  props: {
-    className: "greeting",
-    children: "Hello, world!"
-  }
-};
-```
 
 ## 生命周期
 
@@ -975,3 +1036,46 @@ Next.js 的显示过程：
   - 是从缓存中去读取还是实时获得？
 - 缓存
   - 保留上一次搜索结果的数据还是保留后台所有数据？
+
+## Hooks
+
+props/state/context(todo)/refs(todo)/lifecycle
+
+Solve Problems:
+
+1. Hard to reuse stateful logic
+   - render props(todo)
+   - hoc(todo)
+   - hooks
+2. Hard to understand
+   - side effect in lifecycle method
+   - class
+   - this
+
+有状态的无 UI，有 UI 的无状态
+
+API:
+
+- useState
+- useEffect
+- useReducer
+- useContext
+
+Rules:
+
+1. 只能在函数最外层调用
+2. 只能在函数组件中调用
+3. 在自定义 Hook 中调用
+
+## 常用的第三方包
+
+- [terser](https://github.com/terser-js/terser): 用于压缩代码
+- [babel-cli](https://www.npmjs.com/package/babel-cli)以及[babel-preset-react-app](https://www.npmjs.com/package/babel-preset-react-app): 用于将 JSX 转化为 ES5
+
+## 前端项目步骤
+
+1. ES6 代码
+2. Babel 转化
+3. Webpack 打包
+4. Jenkins
+5. 部署到 server

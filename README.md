@@ -472,6 +472,8 @@ export default withTimer(ChatApp);
 
 ## 组件复用 - 函数作为子组件
 
+函数作为子组件是组件复用的常用方式。通常是使用`this.props.children`，但也可以自定义。
+
 ```javascript
 // 使用 children 属性，children 接收的是一个函数
 class MyComponent extends React.Component {
@@ -485,6 +487,21 @@ MyComponent.propTypes = {
 
 // 函数作为子组件使用
 <MyComponent>{name => <div>{name}</div>}</MyComponent>;
+```
+
+```javascript
+function SplitPane(props) {
+  return (
+    <div className="SplitPane">
+      <div className="SplitPane-left">{props.left}</div>
+      <div className="SplitPane-right">{props.right}</div>
+    </div>
+  );
+}
+
+function App() {
+  return <SplitPane left={<Contacts />} right={<Chat />} />;
+}
 ```
 
 ## Context API

@@ -148,7 +148,7 @@ NOTE: `this.setState()`是异步执行的，详情请见 TODO。
 
 ### 受控组件（推荐使用） VS 非受控组件
 
-form 表单相关的元素比较特殊，在 React 中由两种设计思路：
+form 表单相关的元素(主要有`input`/`textarea`/`select`)比较特殊，在 React 中由两种设计思路：
 
 1. 受控组件  
    受控组件的表单元素由使用者维护。
@@ -1152,6 +1152,7 @@ Rules:
 
 - [terser](https://github.com/terser-js/terser): 用于压缩代码
 - [babel-cli](https://www.npmjs.com/package/babel-cli)以及[babel-preset-react-app](https://www.npmjs.com/package/babel-preset-react-app): 用于将 JSX 转化为 ES5
+- [formik](https://jaredpalmer.com/formik/): form 表单的一种解决方案(TODO)
 
 ## 前端项目步骤
 

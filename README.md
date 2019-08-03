@@ -93,12 +93,14 @@ const element = <h1>Hello, world</h1>;
 ReactDOM.render(element, document.getElementById("root"));
 ```
 
-## 组件方式构建 UI
+## 组件方式(state + props)构建 UI
 
 组件由元素组成，在代码中表现为由 `props` 和 `state` 组成 `view`，可以理解为一个纯函数。
 
 - `props` 是由上层组件(使用者)传递给下层组件的，下层组件不能修改上层组件传给它的`props`，这叫做组件间的单向数据流(注意，`Flux` 单向数据流指的是整个 React 应用的数据流)。
 - `state` 表示组件内的状态。
+
+NOTE: `this.setState()`是异步执行的，详情请见 TODO。
 
 组件设计时，推荐的原则有：
 
@@ -229,7 +231,7 @@ form 表单相关的元素比较特殊，在 React 中由两种设计思路：
 2. `this.props` 和 `this.state`
 3. `prevProps` 和 `prevState`
 
-在 React 组件中，我们可以这么考虑。在现在这个时间，render 以 `this.state.color = "red"` 为基准渲染出了 View。
+在 React 组件中，我们可以这么考虑。在当前时间，render 以 `this.state.color = "red"` 为基准渲染出了 View。
 执行 `this.setState({color:"green"})` 会有如下步骤：
 
 1. 执行 `shouldComponentUpdate(nextProps, nextState)`:  
@@ -288,9 +290,88 @@ form 表单相关的元素比较特殊，在 React 中由两种设计思路：
 1. 组件移除时被调用
 2. 典型场景: 资源释放
 
+## 事件处理
+
+传统的 HTML：
+
+```html
+<button onclick="activateLasers()">
+  Activate Lasers
+</button>
+```
+
+React 中事件：
+
+```javascript
+<button onClick={activateLasers}>Activate Lasers</button>
+```
+
+如果是 class 组件，在事件处理时，需要正确处理`this`的引用。主要有 3 种方式：
+
+1. bind
+
+   ```javascript
+   class Toggle extends React.Component {
+     constructor(props) {
+       super(props);
+       this.state = { isToggleOn: true };
+
+       // 为了在回调中使用 `this`，这个绑定是必不可少的
+       this.handleClick = this.handleClick.bind(this);
+     }
+
+     handleClick() {
+       this.setState(state => ({
+         isToggleOn: !state.isToggleOn
+       }));
+     }
+
+     render() {
+       return (
+         <button onClick={this.handleClick}>
+           {this.state.isToggleOn ? "ON" : "OFF"}
+         </button>
+       );
+     }
+   }
+   ```
+
+2. public class filed 语法
+
+   ```javascript
+   class LoggingButton extends React.Component {
+     // 此语法确保 `handleClick` 内的 `this` 已被绑定。
+     // 注意: 这是 *实验性* 语法。
+     handleClick = () => {
+       console.log("this is:", this);
+     };
+
+     render() {
+       return <button onClick={this.handleClick}>Click me</button>;
+     }
+   }
+   ```
+
+3. 箭头函数(不推荐，每次渲染组件时，都会创建新的回调函数)
+
+   ```javascript
+   class LoggingButton extends React.Component {
+     handleClick() {
+       console.log("this is:", this);
+     }
+
+     render() {
+       // 此语法确保 `handleClick` 内的 `this` 已被绑定。
+       return <button onClick={e => this.handleClick(e)}>Click me</button>;
+     }
+   }
+   ```
+
 ## Virtual DOM 和 key
 
 React 引入了虚拟 DOM 的概念。虚拟 DOM 使用 diff 算法，根据广度优先原则，加快了真实 DOM 的渲染。
+
+key 帮助 React 识别哪些元素改变了，比如被添加或删除。因此应当给数组中的每一个元素赋予一个确定的标识。一个好的经验法则是：在 `map()` 方法中的元素需要设置 key 属性。
 
 在进行 diff 算法运算时，比较虚拟 DOM 的改变：
 

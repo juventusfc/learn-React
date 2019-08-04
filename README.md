@@ -554,7 +554,9 @@ class ThemedButton extends React.Component {
 - Codesandbox：在线的一款快速构建 React 应用
 - Rekit：一款在 CRA 基础上增加了 Redux 等功能的 CLI
 
-## 打包和部署
+## 打包
+
+打包是一个将文件引入并合并到一个单独文件的过程，最终形成一个 “bundle”。接着在页面上引入该 bundle，整个应用即可一次性加载。
 
 打包的主要目的是将代码编译为浏览器可以识别的代码，同时也起到整合资源和优化代码体积的目的。
 
@@ -563,6 +565,85 @@ class ThemedButton extends React.Component {
 1. 环境变量的设置
 2. 禁用开发时的代码，如 logger 等
 3. 设置应用的根路径
+
+## 代码分割
+
+对你的应用进行代码分割能够帮助你“懒加载”当前用户所需要的内容，能够显著地提高你的应用性能。尽管并没有减少应用整体的代码体积，但你可以避免加载用户永远不需要的代码，并在初始加载的时候减少所需加载的代码量。
+
+1. `import()`
+
+   ```javascript
+   // moduleA.js
+   const moduleA = "Hello";
+
+   export { moduleA };
+   ```
+
+   ```javascript
+   // App.js
+   import React, { Component } from "react";
+
+   class App extends Component {
+     handleClick = () => {
+       import("./moduleA")
+         .then(({ moduleA }) => {
+           // Use moduleA
+         })
+         .catch(err => {
+           // Handle failure
+         });
+     };
+
+     render() {
+       return (
+         <div>
+           <button onClick={this.handleClick}>Load</button>
+         </div>
+       );
+     }
+   }
+
+   export default App;
+   ```
+
+2. `React.lazy` 以及 `suspense`
+
+   ```javascript
+   const OtherComponent = React.lazy(() => import("./OtherComponent"));
+
+   function MyComponent() {
+     return (
+       <div>
+         <Suspense fallback={<div>Loading...</div>}>
+           <OtherComponent />
+         </Suspense>
+       </div>
+     );
+   }
+   ```
+
+3. 异常捕获边界
+
+   ```javascript
+   import MyErrorBoundary from "./MyErrorBoundary";
+   const OtherComponent = React.lazy(() => import("./OtherComponent"));
+   const AnotherComponent = React.lazy(() => import("./AnotherComponent"));
+
+   const MyComponent = () => (
+     <div>
+       <MyErrorBoundary>
+         <Suspense fallback={<div>Loading...</div>}>
+           <section>
+             <OtherComponent />
+             <AnotherComponent />
+           </section>
+         </Suspense>
+       </MyErrorBoundary>
+     </div>
+   );
+   ```
+
+## 部署
 
 ## Redux 主要概念
 

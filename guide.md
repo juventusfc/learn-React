@@ -470,7 +470,7 @@ export class ChatApp extends React.Component {
 export default withTimer(ChatApp);
 ```
 
-## 组件复用 - 函数作为子组件
+## 组件复用 - render props 函数作为子组件
 
 函数作为子组件是组件复用的常用方式。通常是使用`this.props.children`，但也可以自定义。
 
@@ -501,50 +501,6 @@ function SplitPane(props) {
 
 function App() {
   return <SplitPane left={<Contacts />} right={<Chat />} />;
-}
-```
-
-## Context API
-
-随着组件层级的递增，如果最下层的组件需要某个 props，但是该 props 来自最上层。为了使最下层获取该 props，我们会在各个中间层也传进去这个 props，中间层只是起到传递作用，不会对这个 props 进行更改。这样会使代码看起来很乱。 Context 提供了另外一种传递数据的方式。 Redux 就采用了这种方式。
-
-```javascript
-// 1. Context lets us pass a value deep into the component tree
-// without explicitly threading it through every component.
-// Create a context for the current theme (with "light" as the default).
-const ThemeContext = React.createContext("light");
-
-class App extends React.Component {
-  render() {
-    // 2. Use a Provider to pass the current theme to the tree below.
-    // Any component can read it, no matter how deep it is.
-    // In this example, we're passing "dark" as the current value.
-    return (
-      <ThemeContext.Provider value="dark">
-        <Toolbar />
-      </ThemeContext.Provider>
-    );
-  }
-}
-
-// A component in the middle doesn't have to
-// pass the theme down explicitly anymore.
-function Toolbar(props) {
-  return (
-    <div>
-      <ThemedButton />
-    </div>
-  );
-}
-
-class ThemedButton extends React.Component {
-  // 3. Assign a contextType to read the current theme context.
-  // React will find the closest theme Provider above and use its value.
-  // In this example, the current theme is "dark".
-  static contextType = ThemeContext;
-  render() {
-    return <Button theme={this.context} />;
-  }
 }
 ```
 

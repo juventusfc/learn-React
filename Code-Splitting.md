@@ -56,7 +56,7 @@
    }
    ```
 
-3. 异常捕获边界
+3. 错误边界
 
    ```javascript
    import MyErrorBoundary from "./MyErrorBoundary";

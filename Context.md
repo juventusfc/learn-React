@@ -2,7 +2,7 @@
 
 随着组件层级的递增，如果最下层的组件需要某个 props，但是该 props 肯恩他来自最上层。为了使最下层获取该 props，我们会在各个中间层也传进去这个 props，中间层只是起到传递作用，不会对这个 props 进行更改。这样会使代码看起来很乱。 Context 提供了另外一种传递数据的方式。 Redux 就采用了这种方式，但是它使用了 HOC 进一步封装了 Context。
 
-使用 Context 时的步骤包括：
+使用 Context 时的步骤包括:
 
 1. 创建 UserContext，由于创建的 UserContext 是一个 React 组件，所以要用大写。
 

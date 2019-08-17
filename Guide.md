@@ -221,6 +221,17 @@ form 表单相关的元素(主要有`input`/`textarea`/`select`)比较特殊，�
    }
    ```
 
+## 数据流
+
+React 的数据流主要有:
+
+1. props  
+   父组件通过更改子组件的 props 更改子组件。
+2. refs  
+   父组件通过更改子组件的 refs 更改子组件。
+3. Context  
+   组件之间通过修改 Context 已更新组件树。
+
 ## 生命周期
 
 ![life-cycle](./images/react-lifecycle.PNG)

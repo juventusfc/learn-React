@@ -186,3 +186,5 @@ class CustomTextInput extends React.Component {
 ```
 
 ## Refs 转发
+
+Ref 转发是一项将 ref 自动地通过组件传递到其一子组件的技巧。
